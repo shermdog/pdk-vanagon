@@ -73,7 +73,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Run 'bundle install' in the generated module to cache the gems
     # inside the project cachedir.
-    build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} install && popd"
+    build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" PATH=\"$PATH:/opt/pl-build-tools/bin\" LD_LIBRARY_PATH=\"$LD_LIBRARY_PATH:/opt/puppetlabs/pdk/lib\" CC=\"/opt/pl-build-tools/bin/gcc\" #{settings[:host_bundle]} install && popd"
 
     # Install bundler and other special deps into the gem cache
     build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:gem_install]} ../bundler-#{settings[:bundler_version]}.gem"
@@ -116,7 +116,7 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
 
       # Istall all the deps into the package cachedir.
-      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
+      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" PATH=\"$PATH:/opt/pl-build-tools/bin\" LD_LIBRARY_PATH=\"$LD_LIBRARY_PATH:/opt/puppetlabs/pdk/lib\" CC=\"/opt/pl-build-tools/bin/gcc\" #{local_settings[:host_bundle]} install && popd"
 
       # Install bundler itself into the gem cache for this ruby
       build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:gem_install]} --force ../bundler-#{settings[:bundler_version]}.gem"
